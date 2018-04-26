@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -17,7 +16,6 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -44,12 +42,7 @@ public final class HttpEndpointCreator implements Closeable{
 				.build();
 		this.rest = new RestTemplateBuilder()
 				.detectRequestFactory(true)
-				.requestFactory(new Supplier<ClientHttpRequestFactory>() {
-					@Override
-					public final ClientHttpRequestFactory get() {
-						return new HttpComponentsClientHttpRequestFactory(httpclient);
-					}
-				})
+				.requestFactory(new HttpComponentsClientHttpRequestFactory(httpclient))
 				.build();
 		this.defaultHeaders = new ConcurrentHashMap<String, String>();
 	}
@@ -72,12 +65,7 @@ public final class HttpEndpointCreator implements Closeable{
 				.build();
 		this.rest = new RestTemplateBuilder()
 				.detectRequestFactory(true)
-				.requestFactory(new Supplier<ClientHttpRequestFactory>() {
-					@Override
-					public final ClientHttpRequestFactory get() {
-						return new HttpComponentsClientHttpRequestFactory(httpclient);
-					}
-				})
+				.requestFactory(new HttpComponentsClientHttpRequestFactory(httpclient))
 				.build();
 		this.defaultHeaders = new ConcurrentHashMap<String, String>();
 	}
