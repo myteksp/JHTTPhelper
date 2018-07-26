@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,13 +16,13 @@ import org.springframework.web.client.RestTemplate;
 import com.gf.http.GenericHttpEndpoint;
 
 public final class GenericEndpointImpl implements GenericHttpEndpoint{
-	private final ConcurrentHashMap<String, String> defaultHeaders;
+	private final Map<String, String> defaultHeaders;
 	private final RestTemplate rest;
 	private final String baseUrl;
 
 	public GenericEndpointImpl(final String baseUrl, final RestTemplate rest, final Map<String, String> defaultHeaders) {
 		this.rest = rest;
-		this.defaultHeaders = new ConcurrentHashMap<String, String>();
+		this.defaultHeaders = new HashMap<String, String>(defaultHeaders.size() + 5);
 		this.baseUrl = baseUrl;
 		this.setDefaultHeaders(defaultHeaders);
 	}
