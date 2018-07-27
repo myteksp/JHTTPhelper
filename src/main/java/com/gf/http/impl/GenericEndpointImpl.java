@@ -81,11 +81,12 @@ public final class GenericEndpointImpl implements GenericHttpEndpoint{
 
 	@Override
 	public <T> T get(final String path, final Class<T> clz, final Tracer tracer) {
+		final HashMap<String, Object> traceObject = new HashMap<String, Object>();
 		try {
 			tracer.trace("->>GET:");
 			final String url = getUrl(path);
 			final HttpHeaders hdrs = buildeaders();
-			final HashMap<String, Object> traceObject = new HashMap<String, Object>();
+			
 			traceObject.put("url", url);
 			traceObject.put("requestHeaders", hdrs);
 
@@ -99,7 +100,9 @@ public final class GenericEndpointImpl implements GenericHttpEndpoint{
 
 			return res;
 		}catch(final Throwable t) {
-			tracer.trace(t.getMessage() + '\n' + JSON.toPrettyJson(t.getStackTrace()));
+			traceObject.put("errorMessage", t.getMessage());
+			traceObject.put("stackTrace", t.getStackTrace());
+			tracer.trace(JSON.toPrettyJson(traceObject));
 			tracer.trace("<<-GET");
 			throw new RuntimeException(t);
 		}
@@ -134,10 +137,9 @@ public final class GenericEndpointImpl implements GenericHttpEndpoint{
 
 	@Override
 	public <T> T post(final String path, final Object body, final Class<T> clz, final Tracer tracer) {
+		final HashMap<String, Object> traceObject = new HashMap<String, Object>();
 		try {
 			tracer.trace("->>POST:");
-			final HashMap<String, Object> traceObject = new HashMap<String, Object>();
-			
 			final String url = getUrl(path);
 			final HttpHeaders hdrs = buildHeaders(getContentType(body));
 			final HttpEntity<?> requestEntity = new HttpEntity<Object>(body, hdrs);
@@ -154,7 +156,9 @@ public final class GenericEndpointImpl implements GenericHttpEndpoint{
 			tracer.trace("<<-POST");
 			return res;
 		}catch(final Throwable t) {
-			tracer.trace(t.getMessage() + '\n' + JSON.toPrettyJson(t.getStackTrace()));
+			traceObject.put("errorMessage", t.getMessage());
+			traceObject.put("stackTrace", t.getStackTrace());
+			tracer.trace(JSON.toPrettyJson(traceObject));
 			tracer.trace("<<-POST");
 			throw new RuntimeException(t);
 		}
