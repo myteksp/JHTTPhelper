@@ -86,14 +86,14 @@ public final class GenericEndpointImpl implements GenericHttpEndpoint{
 			final String url = getUrl(path);
 			final HttpHeaders hdrs = buildeaders();
 			final HashMap<String, Object> traceObject = new HashMap<String, Object>();
-			traceObject.put("URL", url);
-			traceObject.put("REQUEST_HEADERS", hdrs);
+			traceObject.put("url", url);
+			traceObject.put("requestHeaders", hdrs);
 
 			final ResponseEntity<T> result = rest.exchange(url, HttpMethod.GET, new HttpEntity<Object>(hdrs), clz);
 			final T res = result.getBody();
 
-			traceObject.put("RESPONSE_HEADERS", result.getHeaders());
-			traceObject.put("RESPONSE", res);
+			traceObject.put("responseHeaders", result.getHeaders());
+			traceObject.put("response", res);
 			tracer.trace(JSON.toPrettyJson(traceObject));
 			tracer.trace("<<-GET");
 
@@ -142,14 +142,14 @@ public final class GenericEndpointImpl implements GenericHttpEndpoint{
 			final HttpHeaders hdrs = buildHeaders(getContentType(body));
 			final HttpEntity<?> requestEntity = new HttpEntity<Object>(body, hdrs);
 			
-			traceObject.put("URL", url);
-			traceObject.put("REQUEST_HEADERS", hdrs);
-			traceObject.put("REQUEST", body);
+			traceObject.put("url", url);
+			traceObject.put("requestHeaders", hdrs);
+			traceObject.put("request", body);
 			
 			final ResponseEntity<T> result = rest.exchange(url, HttpMethod.POST, requestEntity, clz);
 			final T res = result.getBody();
-			traceObject.put("RESPONSE_HEADERS", result.getHeaders());
-			traceObject.put("RESPONSE", res);
+			traceObject.put("responseHeaders", result.getHeaders());
+			traceObject.put("response", res);
 			tracer.trace(JSON.toPrettyJson(traceObject));
 			tracer.trace("<<-POST");
 			return res;
